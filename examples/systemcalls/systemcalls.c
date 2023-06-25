@@ -138,9 +138,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
 	fd = open(outputfile,O_WRONLY | O_TRUNC | O_CREAT);
 	if(fd == -1)
 		perror("Could not open output file");
-	if(dup2(fd, 1) == -1) //Redirect to standard out
-		perror ("dup2");
-		
+
 	int fork1 = 0;
 
 	fflush(stdout);
@@ -155,6 +153,11 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
 	
 	if(!fork1)
 	{
+		if(dup2(fd, 1) == -1) //Redirect to standard out
+			perror ("dup2");
+			
+		 close(fd);
+		
 		 ret = execv(command[0], command);
 		 exit(ret);
 		 if(ret == -1)
@@ -163,6 +166,8 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
 		     return false;
 	   	 }
 	}
+	
+ 	close(fd);
 	
 	int status;
 	wait(&status);
