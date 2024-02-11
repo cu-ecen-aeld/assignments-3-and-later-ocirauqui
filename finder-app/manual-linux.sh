@@ -11,7 +11,8 @@ KERNEL_VERSION=v5.1.10
 BUSYBOX_VERSION=1_33_1
 FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
-CROSS_COMPILE=aarch64-none-linux-gnu-
+#CROSS_COMPILE=aarch64-none-linux-gnu-
+CROSS_COMPILE=/home/oscar/Documentos/github/LinuxSP/arm-cross-compiler/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-
 
 if [ $# -lt 1 ]
 then
@@ -37,19 +38,19 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
 
     # TODO: Add your kernel build steps here
     echo "Ejecutar mrproper"
-    make ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- mrproper #deep clean. Remove .config file with any existing configuration
+    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE mrproper #deep clean. Remove .config file with any existing configuration
     echo "mrproper done"
     echo "Ejecutar defconfig"
-    make ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- defconfig #Configure the build for our virtual device for QEMU with a defined .config
+    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE defconfig #Configure the build for our virtual device for QEMU with a defined .config
     echo "defconfig done"
     echo "Ejecutar Build kernel"
-    make -j4 ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- all #Build a kernel image for booting with QEMU
+    make -j4 ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE all #Build a kernel image for booting with QEMU
     echo "Build kernel done"
     echo "Build kernel modules"
-    make ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- modules #Build any kernel modules
+    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE modules #Build any kernel modules
     echo "Build kernel modules done"
     echo "Build the device tree"
-    make ARCH=arm64 CROSS_COMPILE=aarch64-none-linux-gnu- dtbs #Build the devicetree
+    make ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE dtbs #Build the devicetree
     echo "Build device tree done"
     
 fi
